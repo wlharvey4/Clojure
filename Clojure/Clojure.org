@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-07 19:26
-#+macro:version Version 0.0.1
+#+date:2020-01-07 19:54
+#+macro:version Version 0.0.2
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -17,6 +17,7 @@
 :END:
 * Clojure for Brave and True
 :PROPERTIES:
+:url: https://www.braveclojure.com
 :author:   "Daniel Higginbotham"
 :author-blog: http://flyingmachinestudios.com
 :reviewer-blog: http://tailrecursion.com/~alan
@@ -163,13 +164,79 @@ examples and advancing in complexity.
 #+texinfo:@heading Part III---Advanced Topics
 
 These chapters cover Clojure’s extra-fun topics---concurrency, Java interop and
-abstraction.
+abstraction.  Although you can write programs without understanding these tools
+and concepts, they’re intellectually rewarding and give you tremendous power as
+a programmer.  One of the reasons people say that learning Clojure makes you a
+better programmer is that it makes the concepts covered in these chapters easy
+to understand and practical to use.
+
+#+texinfo:@subheading Chapter 9---The Sacred Art of Concurrent and Parallel Programming
+
+In this chapter you’ll learn what concurrency and parallelism are and why they
+matter.  You’ll learn about challenges you’ll face when writing parallel
+programs and about how clojure’s design helps to mitigate them.  You’ll use
+futures, delays, and promises to safely write parallel programs.
+
+#+texinfo:@subheading Chapter 10---Clojure Metaphysics---Atoms, Refs, Vars, and Cuddle Zombies
+
+This chapter goes into great detail about Clojure’s approach to managing state
+and how that simplifies concurrent programmibng.  You’ll learn how to use
+atoms, refs, and vars, three constructs for managing state, and you’ll learn
+how to do stateless parallel computation with ~pmap~.  And there will be cuddle
+zombies.
+
+#+texinfo:@subheading Chapter 11---Mastering Concurrent Processes with ~core.async~
+
+In this chapter, you’ll ponder the idea that everything in the univese is a hot
+dog vending machine.  By which I mean you’ll learn how to model systems of
+independently running processes that communicate with each other over channels
+using the ~core.async~ library.
+
+#+texinfo:@subheading Chapter 12---Working with the JVM
+
+This chapter is like a phrase book and cultural introduction to the Land of
+Java.  It gives you an overview of what the JVM is, how it runs programs, and
+how to compile programs for it.  It also gives you a brief tour of frequently
+used Java classes and methods, and explains how to interact with them from
+Clojure.  It shows you how to think about and understand Java so you can
+incorporate any Java library into your Clojure program.
+
+#+texinfo:@subheading Chapter 13---Creating and Extending Abstractions with Multimethods, Protocols, and Records
+
+This chapter serves as an introduction to the world of cereating and
+implementing your own abstractions.  You’ll learn the basics of multimethods,
+protocols, and records.
+
+#+texinfo:@heading Appendix A---Building and Developing with Leiningen
+
+This appendix clarifies some of the finer points of working with Leiningen,
+like what Maven is and how to figure out the version numbers of Java libraries
+so you can use them.
+
+#+texinfo:@heading Appendix B---Boot, the Fancy Clojure Build Framework
+
+Boot is an alternative to Leiningen that provides the same functionality, but
+with the added bonus that its easier to extend and write composable tasks.
+This appendix explains Boot’s underlying concepts and guides you through
+writing your first tasks.
 
 *** The Code
+
+You can download all the source code from the book at
+https://github.com/braveclojure/cftbat-code/.  The code is organized by
+chapter.
+
+Chapter 1 describes the different ways tht you can run Clojure code, including
+how to use a REPL.  I recommend running most of the examples in the REPL as you
+encounter them.  This will help you get used to writing and understanding Lisp
+code, and it will help you retain everything you’re learning.  But for the
+examples that are long, it’s best to write the code to a file, and then run the
+code you wrote in a REPL.
 
 *** The Journey Begins!
 
 ** Building Running and REPL
+
 ** How to use Emacs
 ** Clojure Crash Course
 ** Core Functions in Depth
@@ -510,16 +577,14 @@ Copyright \copy 2020 by {{{author}}}
 
 
 * Export Configurations                                            :noexport:
-#+texinfo_filename:
+#+texinfo_filename:clojure.info
 #+texinfo_class: info
 #+texinfo_header:
 #+texinfo_post_header:
-#+subtitle:
-#+subauthor:
-#+texinfo_dir_category:
-#+texinfo_dir_title:
-#+texinfo_dir_desc:
-#+texinfo_printed_title:
+#+texinfo_dir_category:Programming Languages
+#+texinfo_dir_title:Clojure
+#+texinfo_dir_desc:All about the elegant language of Clojure
+#+texinfo_printed_title:All About Clojure
 
 
 * Local Variables                                                  :noexport:

@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-07 20:08
-#+macro:version Version 0.0.3
+#+date:2020-01-08 01:15
+#+macro:version Version 0.0.4
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -282,11 +282,68 @@ implementation.
 
 For now the main concepts you need to understand are these:
 
+#+cindex:@code{clojure.jar}
 - JVM processes execute Java bytecode
+
+- Usually, the Java Compiler produces Java bytecode from Java source code
+
+- JAR files are collections of Java bytecode
+
+- Java programs are usually distributed as JAR files
+
+- The Java program ~clojure.jar~ reads Clojure source code and produces Java
+  bytecode
+
+- That Java bytecode is then executed by the same JVM process already running
+  ~clojure.jar~
 
 *** Leiningen
 
+
+#+cindex:Leiningen
+Most Clojurists use Leiningen to build and manage their projects.  For now
+we’ll focus on using it for four tasks:
+
+1. Creating a new Clojure project
+
+2. Running the Clojure project
+
+3. Building the Clojure project
+
+4. Using the REPL
+
+
+Before continuing, make sure you have Java version 1.6 or later installed.  You
+can check your version by running:
+
+#+cindex:java version
+#+begin_src sh :results output :exports both
+java --version
+#+end_src
+
+#+RESULTS:
+: java 11 2018-09-25
+: Java(TM) SE Runtime Environment 18.9 (build 11+28)
+: Java HotSpot(TM) 64-Bit Server VM 18.9 (build 11+28, mixed mode)
+
+#+cindex:@code{clojure.jar}
+Install Leiningen using the instructions on the Leiningen home page at
+http://leiningen.org.  When you install Leiningen, it automatically downloads
+the Clojure compiler, ~clojure.jar~.
+
 **** Creating a New Clojure Project
+
+Creating a new Clojure project is very simple.  A single Leiningen command
+creates a project skeleton.  Later, you’ll learn how to do tasks like
+incorporate Clojure libraries.
+
+Create your first Clojure project by typing the following in your terminal:
+
+#+begin_src sh
+lein new app clojure-noob
+#+end_src
+
+#+RESULTS:
 
 **** Running the Clojure Project
 

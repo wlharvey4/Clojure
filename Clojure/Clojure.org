@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-08 01:15
-#+macro:version Version 0.0.4
+#+date:2020-01-09 08:02
+#+macro:version Version 0.0.5
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -252,7 +252,7 @@ understanding of the language and learn more efficiently.
 
 First, I’ll introduce you to Clojure.
 
-Next, Ill cover Leiningen, the de facto standard build tool for Clojure.
+Next, I’ll cover Leiningen, the de facto standard build tool for Clojure.
 
 By the end of the chapter, you’ll know how to do the following:
 
@@ -370,6 +370,89 @@ lein new app clojure-noob
 ** Building and Developing with Leiningen
 ** Boot---Clojure Build Framework
 ** Farewell
+
+* About Leiningen
+
+“for automating Clojure projects without setting your hair on fire”
+
+Leiningen is the easiest way to use Clojure.  With a focus on project
+automation and declarative configuration, it gets out of your way and lets you
+focus on your code.
+
+- [[https://leiningen.org][Leiningen Home]]
+
+- [[https://github.com/technomancy/leiningen][Leiningen GitHub]]
+
+- Installed version:
+  - src_sh[:results scalar :exports results]{lein --version}
+
+
+#+begin_example
+(defproject leiningen.org "1.0.0"
+  :description "Generate static HTML for https://leiningen.org"
+  :dependencies [[enlive "1.0.1"]
+                 [cheshire "4.0.0"]
+                 [org.markdownj/markdownj "0.3.0-1.0.2b4"]]
+  :main leiningen.web)
+#+end_example
+
+** Leiningen Installation Instructions
+
+#+cindex:Leiningen, install
+#+cindex:OpenJDK
+Leiningen and Clojure require Java.  OpenJDK version 8 is recommended at this
+time.
+
+#+cindex:lein script
+1. Download the [[https://raw.githubusercontent.com/technomancy/leiningen/stable/bin/lein][lein script]] (or on Windows =lein.bat=)
+
+2. Place it on your =$PATH= where your shell can find it (eg. =~/bin=)
+
+3. Set it to be executable (=chmod a+x ~/bin/lein=)
+
+4. Run it (~lein~) and it will download the self-install package
+
+** Leiningen Tutorial
+
+#+cindex:Leiningen tutorial
+#+cindex:tutorial
+You can read the tutorial by running 
+: lein help tutorial
+
+- [[https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md][Tutorial on GitHub]]
+
+** Leiningen Documentation
+
+#+cindex:documetation
+#+cindex:FAQ
+#+cindex:sample @file{project.clj}
+- FAQ:
+: lein help faq
+
+- Documentation for each individual task:
+: lein help $TASK
+
+- See the sample ~project.clj~ file containing a reference of most project
+  settings:
+: lein help sample
+
+** Leiningen Profiles
+
+See https://github.com/technomancy/leiningen/blob/stable/doc/PROFILES.md
+
+** Deploying Leiningen Projects
+
+See https://github.com/technomancy/leiningen/blob/stable/doc/DEPLOY.md
+
+** Leiningen Plugins
+
+#+texinfo:@heading Writing Leiningen Plugins
+
+See https://github.com/technomancy/leiningen/blob/stable/doc/PLUGINS.md
+
+#+texinfo:@heading List of Leiningen Plugins
+
+See https://github.com/technomancy/leiningen/wiki/Plugins
 
 * Build Tools
 :PROPERTIES:

@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-09 08:36
-#+macro:version Version 0.0.6
+#+date:2020-01-09 09:55
+#+macro:version Version 0.0.7
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -654,6 +654,408 @@ See https://github.com/technomancy/leiningen/blob/stable/doc/PLUGINS.md
 
 See https://github.com/technomancy/leiningen/wiki/Plugins
 
+* About Clojure Mode
+
+“Emacs support for the Clojure(Script) programming language”
+
+- [[https://github.com/clojure-emacs/clojure-mode][Clojure Mode Home]]
+
+
+Provides Emacs font-lock, indentation, navigation and refactoring for the
+Clojure(Script) programming language.
+
+** Clojure Mode Installation
+
+Available on the major ~package.el~ community maintained repos:
+- [[http://stable.melpa.org/][MELPA Stable]]
+- [[http://melpa.org/][MELPA]]
+
+
+MELPA Stable is the recommended repo as it has the latest stable version. MELPA
+has a development snapshot for users who don't mind (infrequent) breakage but
+don't want to run from a git checkout.
+
+You can install ~clojure-mode~ using the following commands:
+
+: M-x package-refresh-contents
+: M-x package-install [RET] clojure-mode [RET]
+
+or if you'd rather keep it in your dotfiles:
+
+#+begin_src emacs-lisp :eval no
+(unless (package-installed-p 'clojure-mode)
+  (package-install 'clojure-mode))
+#+end_src
+
+#+texinfo:@heading Bundled major modes
+
+The ~clojure-mode~ package actually bundles together several major modes:
+
+- ~clojure-mode~ is a major mode for editing Clojure code
+
+- ~clojurescript-mode~ is a major mode for editing ClojureScript code
+
+- ~clojurec-mode~ is a major mode for editing ~.cljc~ source files
+
+
+All the major modes derive from ~clojure-mode~ and provide more or less the
+same functionality.  Differences can be found mostly in the font-locking ---
+e.g. ClojureScript has some built-in constructs that are not present in
+Clojure.
+
+The proper major mode is selected automatically based on the extension of the
+file you're editing.  Having separate major modes gives you the flexibility to
+attach different hooks to them and to alter their behavior individually
+(e.g. add extra font-locking just to ~clojurescript-mode~).  Note that all
+modes derive from ~clojure-mode~, so things you add to ~clojure-mode-hook~ and
+~clojure-mode-map~ will affect all the derived modes as well.
+
+** Clojure Mode Configuration
+
+In the spirit of Emacs, pretty much everything you can think of in
+~clojure-mode~ is configurable.
+
+To see a list of available configuration options do:
+: M-x customize-group RET clojure.
+
+*** Indentation Options
+
+The default indentation rules in ~clojure-mode~ are derived from the community
+Clojure Style Guide.  Please, refer to the guide for the general Clojure
+indentation rules.
+
+#+texinfo:@subheading Indentation of docstrings
+
+By default multi-line docstrings are indented with 2 spaces, as this is a
+somewhat common standard in the Clojure community.  You can however adjust this
+by modifying ~clojure-docstring-fill-prefix-width~.  Set it to 0 if you don't
+want multi-line docstrings to be indented at all (which is pretty common in
+most lisps).
+
+#+texinfo:@subheading Indentation of function forms
+
+The indentation of function forms is configured by the variable
+~clojure-indent-style~.  It takes three possible values:
+
+- ~always-align~ (the default)
+
+- ~always-indent~
+
+- ~align-arguments~
+
+
+#+texinfo:@subheading Indentation of macro forms
+
+The indentation of special forms and macros with bodies is controlled via
+
+- ~put-clojure-indent~, 
+
+- ~define-clojure-indent~ and
+
+- ~clojure-backtracking-indent~.
+
+
+Nearly all special forms and built-in macros with bodies have special
+indentation settings in ~clojure-mode~.  You can add/alter the indentation
+settings in your personal config.  See
+https://github.com/clojure-emacs/clojure-mode#indentation-of-macro-forms
+
+#+texinfo:@subheading Vertical alignment
+
+You can vertically align sexps with =C-c SPC=.
+
+This can also be done automatically (as part of indentation) by turning on
+~clojure-align-forms-automatically~.  This way it will happen whenever you
+select some code and hit TAB.
+
+*** Refactoring Support
+
+The available refactorings were originally created and maintained by the
+~clj-refactor.el~ team.  The ones implemented in Elisp only are gradually
+migrated to ~clojure-mode~.
+
+#+texinfo: @subheading Threading macros related features
+
+See
+https://github.com/clojure-emacs/clojure-mode#threading-macros-related-features
+
+#+texinfo:@subheading Cycling things
+
+See https://github.com/clojure-emacs/clojure-mode#cycling-things
+
+#+texinfo:@subheading Convert collection
+
+See https://github.com/clojure-emacs/clojure-mode#convert-collection
+
+#+texinfo:@subheading Let expression
+
+See https://github.com/clojure-emacs/clojure-mode#let-expression
+
+#+texinfo:@subheading Rename ns alias
+
+See https://github.com/clojure-emacs/clojure-mode#rename-ns-alias
+
+#+texinfo:@subheading Add arity to a function
+
+See https://github.com/clojure-emacs/clojure-mode#add-arity-to-a-function
+
+*** Related Packages to Clojure Mode
+
+See https://github.com/clojure-emacs/clojure-mode#related-packages
+
+*** REPL Interaction in Clojure Mode
+
+See https://github.com/clojure-emacs/clojure-mode#repl-interaction
+
+A number of options exist for connecting to a running Clojure process and
+evaluating code interactively.
+
+- Basic REPL ::
+
+  - [[https://github.com/clojure-emacs/inf-clojure][inf-clojure]] ::
+
+    provides basic interaction with a Clojure REPL process.  It's
+       very similar in nature and supported functionality to
+       inferior-lisp-mode for Common Lisp.
+
+- [[https://github.com/clojure-emacs/cider][CIDER]] ::
+
+     a powerful Clojure interactive development environment, similar to SLIME
+     for Common Lisp.
+
+* About CIDER
+
+“CIDER is the Clojure(Script) Interactive Development Environment that Rocks!”
+
+- [[https://cider.mx][CIDER Home]]
+
+- [[https://github.com/clojure-emacs/cider][CIDER GitHub]]
+
+
+#+texinfo:@heading Overview
+
+CIDER extends Emacs with support for interactive programming in Clojure.  The
+features are centered around ~cider-mode~, an Emacs minor-mode that complements
+~clojure-mode~.  While ~clojure-mode~ supports editing Clojure source files,
+~cider-mode~ adds support for interacting with a running Clojure process for
+compilation, debugging, definition and documentation lookup, running tests and
+so on.
+
+** CIDER Installation
+
+The canonical way to install CIDER via Emacs's build-in package manager
+(a.k.a. ~package.el~).  Assuming you've setup the required repository
+(e.g. MELPA), all you need to do is:
+
+: M-x package-install RET cider RET
+
+** CIDER Quick Start
+
+The simplest way to start CIDER is via =C-c C-x j j=.  This command will spin
+an nREPL server and connect CIDER to it.
+
+** CIDER Guide
+
+See https://docs.cider.mx/cider/index.html
+
+*** CIDER Overview
+
+https://docs.cider.mx/cider/index.html
+
+CIDER aims to provide an interactive development experience similar to the one
+you’d get when programming in Emacs Lisp, Common Lisp (with SLIME or Sly),
+Scheme (with Geiser) and Smalltalk.
+
+Programmers are expected to program in a very dynamic and incremental manner,
+constantly re-evaluating existing Clojure definitions and adding new ones to
+their running applications.  You never stop/start a Clojure application while
+using CIDER --- you’re constantly interacting with it and changing it.
+
+You can find more details about the typical CIDER workflow in the [[https://docs.cider.mx/cider/usage/interactive_programming.html][Interactive
+Programming]] section.  While we’re a bit short on video tutorials, you can check
+out this [[https://www.youtube.com/watch?v=aYA4AAjLfT0][introduction to CIDER]] to get a feel about what do we mean by an
+“Interactive Development Environment”.
+
+#+cindex:nREPL
+CIDER’s built on top of [[https://github.com/nrepl/nrepl][nREPL]], the Clojure networked REPL server.
+
+Clojure code gets executed by an nREPL server.  CIDER sends requests to the
+server and processes its responses.  The server’s functionality is augmented by
+additional [[https://github.com/clojure-emacs/cider-nrepl][nREPL middleware]], designed specifically to address the needs of an
+interactive development environment like CIDER.
+
+*** CIDER Up and Running
+
+https://docs.cider.mx/cider/basics/up_and_running.html
+
+To use CIDER, you’ll need to connect it to a running nREPL server that is
+associated with your program.  Most Clojure developers use standard build
+tooling such as Leiningen, Boot, or Gradle, and CIDER can automatically work
+with those tools to get you up and running quickly.  But those tools are not
+required; CIDER can connect to an nREPL server that is already started and is
+managed separately.[fn:2]
+
+There are two ways to connect CIDER to an nREPL server:
+
+1. CIDER can launch an nREPL server for your project from Emacs.
+
+2. You can connect CIDER to an already-running nREPL server, managed
+   separately.
+
+**** Launch an nREPL Server From Emacs
+
+https://docs.cider.mx/cider/basics/up_and_running.html#_launch_an_nrepl_server_from_emacs
+
+#+cindex:nREPL session, launch
+If you have a Clojure project in your file system and want CIDER to launch an
+nREPL session for it, simply visit a file that belongs to the project, and type:
+
+: M-x cider-jack-in RET
+
+CIDER will start an nREPL server and automatically connect to it.
+
+#+cindex:@code{cider-jack-in} command
+In Clojure(Script) buffers the command ~cider-jack-in~ is bound to
+
+: C-c C-x (C-)j (C-)j
+
+The process of jacking-in is pretty simple:
+
+- CIDER shells out and runs a command like ~lein repl :headless~.
+
+- CIDER waits for the nREPL server to start.  CIDER figures out this by parsing
+  the output from the command and waiting for a line like =nREPL server started
+  on port 53005 on host localhost -- nrepl://localhost:53005= to appear there.
+
+- CIDER extracts the port of the nREPL from the preceding message.
+
+- It connects to the running nREPL server.
+
+
+#+texinfo:@heading Auto-Injecting Dependencies
+
+While CIDER’s core functionality requires nothing more than an nREPL server,
+there are many advanced features that depend on the presence of additional
+nREPL middleware.  In the early versions of CIDER (up to CIDER 0.11) users had
+to add those dependencies themselves, which was a painful and error-prone
+process.  Fortunately today that’s handled auto-magically when you’re using
+~cider-jack-in~.
+
+If your project uses ~lein~, ~boot~ or ~tools.deps~ (~deps.edn~), CIDER will
+automatically inject all the necessary nREPL dependencies (e.g. ~cider-nrepl~
+or ~piggieback~) when it starts the server.  The injection process is extremely
+simple --- CIDER simply passes the extra dependencies and nREPL configuration
+to your build tool in the command in runs to start the nREPL server.  Here’s
+how this looks for ~tools.deps~:
+
+#+begin_example
+$ clojure -Sdeps '{:deps {nrepl {:mvn/version "0.6.0"} cider/cider-nrepl {:mvn/version "0.22.4"}}}' 
+  -m nrepl.cmdline 
+  --middleware '["cider.nrepl/cider-middleware"]'
+#+end_example
+
+Normally ~cider-jack-in~ would inject only ~cider-nrepl~ and
+~cider-jack-in-cljs~ would add ~piggieback~ as well.  The injection mechanism
+is configurable and you can easily add more libraries there.  Some CIDER
+extensions would use this mechanism to auto-inject their own dependencies.
+
+#+texinfo:@subheading Jacking-in without a Project
+
+If you try to run ~cider-jack-in~ outside a project directory, CIDER will warn
+you and ask you to confirm whether you really want to do this; more often than
+not, this is an accident.  If you decide to proceed, CIDER will invoke the
+command configured in ~cider-jack-in-default~.  Prior to CIDER 0.17, this
+defaulted to ~lein~ but was subsequently switched to ~clj~, Clojure’s basic
+startup command.
+
+#+texinfo:@subheading Customizing the Jack-in Command Behaviour
+
+You can use =C-u M-x cider-jack-in RET= to specify the exact command that
+~cider-jack-in~ would run.  This option is very useful is you want to specify a
+something like a ~lein~ or ~deps.edn~ profile.
+
+Alternatively you can =C-u C-u M-x cider-jack-in RET=, which is a variation of
+the previous command.  This command will first prompt you for the project you
+want to launch ~cider-jack-in~ in, which is pretty handy if you’re in some
+other directory currently.  This option is also useful if your project contains
+some combination of ~project.clj~, ~build.boot~ and ~deps.edn~ and you want to launch
+a REPL for one or the other.
+
+**** Connect to a Running nREPL Server
+
+https://docs.cider.mx/cider/basics/up_and_running.html#_connect_to_a_running_nrepl_server
+
+If you have an nREPL server already running, CIDER can connect to it.  For
+instance, if you have a Leiningen-based project, go to your project’s directory
+in a terminal session and type:
+
+: $ lein repl :headless
+
+This will start the project’s nREPL server.
+
+If your project uses boot, do this instead:
+
+: $ boot repl -s wait (or whatever task launches a repl)
+
+It is also possible for plain clj, although the command is somewhat longer:
+
+: $ clj -Sdeps '{:deps {cider/cider-nrepl {:mvn/version "0.21.1"}}}'
+:   -m nrepl.cmdline --middleware "[cider.nrepl/cider-middleware]"
+
+Alternatively, you can start nREPL either manually or using the facilities
+provided by your project’s build tool (Gradle, Maven, etc).
+
+After you get your nREPL server running, go back to Emacs and connect to it:
+=M-x cider-connect RET=.  CIDER will prompt you for the host and port
+information, which should have been printed when the previous commands started
+the nREPL server in your project.
+
+In Clojure(Script) buffers the command cider-connect is bound to =C-c C-x c s=.
+
+If you frequently connect to the same hosts and ports, you can tell CIDER about
+them and it will use the information to do completing reads for the host and
+port prompts when you invoke cider-connect. You can identify each host with an
+optional label.
+
+#+begin_src emacs-lisp :eval no
+(setq cider-known-endpoints
+  '(("host-a" "10.10.10.1" "7888")
+    ("host-b" "7888")))
+#+end_src
+
+*** TODO CIDER Interactive Programming
+
+https://docs.cider.mx/cider/usage/interactive_programming.html
+
+** CIDER Features
+
+#+texinfo:@heading Code Completion
+
+CIDER provides smart code completion for Clojure and ClojureScript.
+
+#+texinfo:@heading Enhanced REPL
+
+CIDER provides a super-charged REPL experience with all the bells and whistles
+you can imagine.
+
+#+texinfo:@heading Definition and Documentation Lookup
+
+CIDER provides powerful code and documentation lookup facilities.
+
+#+texinfo:@heading Human-friendly Error Messages
+
+CIDER tries to present Clojure's notorious stacktraces in a manner that's less
+intimidating and more informative.
+
+#+texinfo:@heading Interactive Debugger
+
+CIDER tries to present Clojure's notorious stacktraces in a manner that's less
+intimidating and more informative.
+
+#+texinfo:@heading Test Integration
+
+CIDER gives you the ability to run your tests without ever leaving your editor.
+
 * Build Tools
 :PROPERTIES:
 :appendix: t
@@ -974,13 +1376,6 @@ Copyright \copy 2020 by {{{author}}}
 :END:
 
 
-* Footnotes
-
-[fn:1]Org requires [[https://github.com/clojure-emacs/clojure-mode][Clojure-mode]] to work with clojure source code.  Clojure mode
-provides Emacs font-lock, indentation, navigation and refactoring for the
-Clojure(Script) programming language.
-
-
 * Export Configurations                                            :noexport:
 #+texinfo_filename:clojure.info
 #+texinfo_class: info
@@ -993,6 +1388,17 @@ Clojure(Script) programming language.
 
 
 * Local Variables                                                  :noexport:
+
+* Footnotes
+
+[fn:1]Org requires [[https://github.com/clojure-emacs/clojure-mode][Clojure-mode]] to work with clojure source code.  Clojure mode
+provides Emacs font-lock, indentation, navigation and refactoring for the
+Clojure(Script) programming language.
+
+
+
+[fn:2]CIDER will automatically work with Leiningen 2.9.0+ or Boot 2.8.3+.
+Older versions are not supported.
 # Local Variables:
 # fill-column: 79
 # indent-tabs-mode: t

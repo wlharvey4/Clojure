@@ -3,18 +3,93 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-09 08:02
-#+macro:version Version 0.0.5
+#+date:2020-01-09 08:36
+#+macro:version Version 0.0.6
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
 #+texinfo:@insertcopying
 
 
-* Introduction
+* Introduction to Clojure
 :PROPERTIES:
 :unnumbered: t
 :END:
+
+“Clojure is a robust, practical, and fast programming language with a set of
+useful features that together form a simple, coherent, and powerful tool.”
+
+- [[https://clojure.org][Clojure Home]]
+
+- [[https://clojure.org/reference/reader][Clojure Reference]]
+
+- [[https://clojure.org/api/api][Clojure API]]
+
+- [[https://clojure.org/guides/getting_started][Clojure Guides]]
+
+
+Clojure is a dynamic, general-purpose programming language, combining the
+approachability and interactive development of a scripting language with an
+efficient and robust infrastructure for multithreaded programming.  Clojure is
+a compiled language, yet remains completely dynamic --- every feature supported
+by Clojure is supported at runtime.  Clojure provides easy access to the Java
+frameworks, with optional type hints and type inference, to ensure that calls
+to Java can avoid reflection.
+
+Clojure is a dialect of Lisp, and shares with Lisp the code-as-data philosophy
+and a powerful macro system.  Clojure is predominantly a functional programming
+language, and features a rich set of immutable, persistent data structures.
+When mutable state is needed, Clojure offers a software transactional memory
+system and reactive Agent system that ensure clean, correct, multithreaded
+designs.
+
+** Clojure Features
+
+#+texinfo:@heading Dynamic Development
+
+Clojure is a dynamic environment you can interact with.  Almost all of the
+language constructs are reified, and thus can be examined and changed.  You can
+grow your program, with data loaded, adding features, fixing bugs, testing, in
+an unbroken stream.
+
+#+texinfo:@heading LISP
+
+Clojure is a member of the Lisp family of languages.  Many of the features of
+Lisp have made it into other languages, but Lisp's approach to code-as-data and
+its macro system still set it apart.  Additionally, Clojure’s maps, sets, and
+vectors are as first class in Clojure as lists are in Lisp.
+
+#+texinfo:@heading Concurrent Programming
+
+Clojure simplifies multi-threaded programming in several ways.  Because the
+core data structures are immutable, they can be shared readily between threads.
+Clojure, being a practical language, allows state to change but provides
+mechanism to ensure that, when it does so, it remains consistent, while
+alleviating developers from having to avoid conflicts manually using locks etc.
+
+#+texinfo:@heading Functional Programming
+
+Clojure provides the tools to avoid mutable state, provides functions as
+first-class objects, and emphasizes recursive iteration instead of side-effect
+based looping.  Clojure is impure, yet stands behind the philosophy that
+programs that are more functional are more robust.
+
+#+texinfo:@heading Runtime Polymorphism
+
+Systems that utilize runtime polymorphism are easier to change and extend.
+Clojure offers simple, powerful and flexible mechanisms for runtime
+polymorphism.  Clojure’s protocols and datatypes features add mechanisms for
+abstraction and data structure definition with no compromises vs the facilities
+of the host platform.
+
+#+texinfo:@heading Hosted on the JVM
+
+Clojure is designed to be a hosted language, sharing the JVM type system, GC,
+threads etc.  All functions are compiled to JVM bytecode.  Clojure is a great
+Java library consumer, offering the dot-target-member notation for calls to
+Java.  Clojure supports the dynamic implementation of Java interfaces and
+classes.
+
 * Clojure for Brave and True
 :PROPERTIES:
 :url: https://www.braveclojure.com
@@ -421,6 +496,131 @@ You can read the tutorial by running
 
 - [[https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md][Tutorial on GitHub]]
 
+
+Leiningen is for automating Clojure projects.  It offers various
+project-related tasks and can:
+
+- create new projects
+- fetch dependencies for your project
+- run tests
+- run a fully-configured REPL
+- compile Java sources (if any)
+- run the project (if the project isn't a library)
+- generate a maven-style "pom" file for the project for interop
+- compile and package projects for deployment
+- publish libraries to repositories such as Clojars
+- run custom automation tasks written in Clojure (leiningen plug-ins)
+
+
+#+texinfo:@heading What This Tutorial Covers
+
+This tutorial will briefly cover
+- project structure,
+- dependency management,
+- running tests,
+- the REPL, and
+- topics related to deployment.
+
+
+This tutorial will help you get started and explain Leiningen's take on project
+automation and JVM-land dependency management.
+
+*** Leiningen Projects
+
+#+cindex:project
+Leiningen works with /projects/. 
+
+#+cindex:@file{project.clj}
+#+cindex:metadata
+A /project/ is a directory containing a group of Clojure (and possibly Java)
+source files, along with a bit of metadata about them.  The metadata is stored
+in a file named ~project.clj~ in the project's root directory, which is how you
+tell Leiningen about things like:
+
+- Project name
+- Project description
+- What libraries the project depends on
+- What Clojure version to use
+- Where to find source files
+- What's the main namespace of the app
+
+
+Most Leiningen tasks only make sense in the context of a project.  Some (for
+example, ~repl~ or ~help~) can also be called from any directory.
+
+*** Creating a Leiningen Project
+
+Generate a new project:
+: lein new app <project-name>
+
+#+begin_example
+$ lein new app my-stuff
+
+Generating a project called my-stuff based on the 'app' template.
+
+$ cd my-stuff
+$ find .
+.
+./.gitignore
+./doc
+./doc/intro.md
+./LICENSE
+./project.clj
+./README.md
+./resources
+./src
+./src/my_stuff
+./src/my_stuff/core.clj
+./test
+./test/my_stuff
+./test/my_stuff/core_test.clj
+#+end_example
+
+#+cindex:template
+#+cindex:app template
+#+cindex:default template
+#+cindex:library
+In this example we're using the =app= template, which is intended for an
+application project rather than a library.  Omitting the =app= argument will
+use the default template, which is suitable for libraries.
+
+#+texinfo:@heading Directory Layout
+
+#+cindex:app directory structure
+#+cindex:project directory
+#+cindex:namespace
+Here we've got your project's README, a ~src/~ directory containing the code, a
+~test/~ directory, and a ~project.clj~ file which describes your project to
+Leiningen.  The ~src/my_stuff/core.clj~ file corresponds to the ~my-stuff.core~
+/namespace/.
+
+#+texinfo:@heading Filename-to-Namespace Mapping Convention
+
+#+cindex:namespace
+Note that we use ~my-stuff.core~ instead of just ~my-stuff~ since
+single-segment namespaces are discouraged in Clojure.  Also note that
+namespaces with dashes in the name will have the corresponding file named with
+underscores instead since the JVM has trouble loading files with dashes in the
+name.  The intricacies of namespaces are a common source of confusion for
+newcomers, and while they are mostly outside the scope of this tutorial you can
+[[https://8thlight.com/blog/colin-jones/2010/12/05/clojure-libs-and-namespaces-require-use-import-and-ns.html][read up on them elsewhere]].
+
+#+texinfo:@heading @file{project.clj}
+
+Your project.clj file will start off looking something like this:[fn:1]
+
+#+begin_src clojure :eval no
+(defproject my-stuff "0.1.0-SNAPSHOT"
+  :description "FIXME: write description"
+  :url "https://example.com/FIXME"
+  :license {:name "Eclipse Public License"
+            :url "https://www.eclipse.org/legal/epl-v10.html"}
+  :dependencies [[org.clojure/clojure "1.8.0"]]
+  :main ^:skip-aot my-stuff.core
+  :target-path "target/%s"
+  :profiles {:uberjar {:aot :all}})
+#+end_src
+
 ** Leiningen Documentation
 
 #+cindex:documetation
@@ -775,6 +975,10 @@ Copyright \copy 2020 by {{{author}}}
 
 
 * Footnotes
+
+[fn:1]Org requires [[https://github.com/clojure-emacs/clojure-mode][Clojure-mode]] to work with clojure source code.  Clojure mode
+provides Emacs font-lock, indentation, navigation and refactoring for the
+Clojure(Script) programming language.
 
 
 * Export Configurations                                            :noexport:

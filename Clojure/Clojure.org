@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-13 23:52
-#+macro:version Version 0.0.9
+#+date:2020-01-14 00:06
+#+macro:version Version 0.0.10
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -1199,7 +1199,7 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 	       -H "Content-Type: application/json" \
 	       -X PATCH \
 	       -d '{"homepage":"https://$(AWS_S3_BUCKET)/$(DIR)-$(VERS)"}' \
-	       https://api.github.com/repos/wlharvey4/AWS-Guide
+	       https://api.github.com/repos/$(USER)/$(PROG)
 
   update: $(ORG)
 	  emacs -Q --batch --eval \

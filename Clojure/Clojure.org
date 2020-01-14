@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-09 13:18
-#+macro:version Version 0.0.8
+#+date:2020-01-13 23:52
+#+macro:version Version 0.0.9
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -1064,22 +1064,34 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 :PROPERTIES:
 :appendix: t
 :END:
+
 ** Makefile
 :PROPERTIES:
 :appendix: t
 :END:
+
+# curl -i 
+#      -H "authorization: token $token" 
+#      -H "content-type: application/json" 
+#      -X PATCH 
+#      -d '{"homepage":"https://pinecone-forest.com/aws-guide-v0.0.56"}'
+#      https://api.github.com/repos/wlharvey4/AWS-Guide
+
 #+name:Makefile
 #+header: :tangle Makefile
 #+header: :noweb tangle
 #+begin_src makefile
+  TEMPLATE = $(ORG_TEMPLATE)
+
   ### PROGRAM
   PROG   = <<get-org-filename()>>
   DIR    = <<get-org-lc-filename()>>
   VERS   = <<get-file-version()>>
   S3VERS = <<get-s3-version()>>
+  USER   = <<get-github-user-info('login')>>
 
   ### TOOLS
-  TOOLS = tools
+  TOOLS  = tools
   CMPRPL = $(TOOLS)/cmprpl
 
   ### TEXINFO
@@ -1090,39 +1102,54 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
   HTML  = $(DIR)/index.html
 
   ### HTML DIR
-  OLDDIR= $(DIR)-old
+  DIR_OLD= $(DIR)-old
   INDEX = index.html
 
+  ### GITHUB
+  TOKEN = $(GITHUB_TOKEN)
+
   ### AWS
-  HOME = s3://$(AWS_BUCKET)
-  AWS  = aws2
-  S3   = $(AWS) s3
-  SRC  = $(DIR)/
+  BUCKET = s3://$(AWS_S3_BUCKET)
+  AWS    = aws2
+  S3     = $(AWS) s3
+  SRC    = $(DIR)/
 
-  DST_OLD = $(HOME)/$(DIR)-$(S3VERS)
-  DST_NEW = $(HOME)/$(DIR)-$(VERS)
+  DST_OLD = $(BUCKET)/$(DIR)-$(S3VERS)
+  DST_NEW = $(BUCKET)/$(DIR)-$(VERS)
   EXCL_INCL = --exclude "*" --include "*.html"
-  GRANTS = --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
-  REGION = --region us-west-2
-  S3SYNC = $(S3) sync $(EXCL_INCL) $(SRC) $(DST_OLD) $(REGION) $(GRANTS)
-  S3MOVE = $(S3) mv --recursive $(DST_OLD) $(DST_NEW) $(REGION) $(GRANTS)
+  GRANTS  = --grants read=uri=http://acs.amazonaws.com/groups/global/AllUsers
+  REGION  = --region us-west-2
+  S3SYNC  = $(S3) sync $(EXCL_INCL) $(SRC) $(DST_OLD) $(REGION) $(GRANTS)
+  S3MOVE  = $(S3) mv --recursive $(DST_OLD) $(DST_NEW) $(REGION) $(GRANTS)
 
-  default: texi info html pdf
+  default: check texi info html pdf
 
-  PHONY: default all texi info html pdf open-org open-texi open-html \
-	   open-pdf clean clean-dist help sync
+  PHONY: check default all \
+	  texi info html pdf \
+	  open-org open-texi open-html open-pdf \
+	  clean clean-dist help sync update values
 
-  show-version:
-	  @echo EMACSLOADPATH $(EMACSLOADPATH)
-	  @echo AWS_BUCKET $(AWS_BUCKET)
-	  @echo PROG $(PROG)
-	  @echo VERS $(VERS)
-	  @echo S3VERS $(S3VERS)
-	  @echo DIR $(DIR)
-	  @echo OLDDIR $(OLDDIR)
-	  @echo SRC $(SRC)
-	  @echo DST_OLD $(DST_OLD)
-	  @echo DST_NEW $(DST_NEW)
+  values:
+	  @echo EMACSLOADPATH:	$(EMACSLOADPATH)
+	  @echo AWS_S3_BUCKET:	$(AWS_S3_BUCKET)
+	  @echo GITHUB_TOKEN:	is set
+	  @echo USER:		$(USER)
+	  @echo PROG:		$(PROG)
+	  @echo VERS:		$(VERS)
+	  @echo S3VERS:		$(S3VERS)
+	  @echo DIR:		$(DIR)
+	  @echo DIR_OLD:		$(DIR_OLD)
+	  @echo SRC:		$(SRC)
+	  @echo DST_OLD:	$(DST_OLD)
+	  @echo DST_NEW:	$(DST_NEW)
+
+  check:
+	  [[ -z $${AWS_S3_BUCKET} ]] && \
+	     { printf "$${RED}\$$AWS_S3_BUCKET $${CYAN}must be set.$${CLEAR}\n"; exit 1; } || \
+	     printf "$${GREEN}\$${AWS_S3_BUCKET}: $${CYAN}$${AWS_S3_BUCKET}$${CLEAR}\n";
+	  [[ -z $${GITHUB_TOKEN} ]] && \
+	     { printf "$${RED}\$$GITHUB_TOKEN $${CYAN}must be set.$${CLEAR}\n"; exit 1; } || \
+	     printf "$${GREEN}\$${GITHUB_TOKEN}: set\n";
 
   open-org: $(ORG)
 	  emacsclient $(ORG) &
@@ -1132,13 +1159,12 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 
   texi: $(TEXI)
   $(TEXI): $(ORG)
-	  /Applications/MacPorts/EmacsMac.app/Contents/MacOS/bin/emacs --batch --eval '\
+	  emacs --batch --eval '\
 	  (progn \
-	    (setq org-export-backends (quote (texinfo))) \
 	    (require (quote org)) \
 	    (require (quote ob)) \
+	    (require (quote ox-texinfo)) \
 	    (require (quote ob-shell)) \
-	    (require (quote ob-clojure)) \
 	    (setq org-confirm-babel-evaluate nil) \
 	    (find-file "$(ORG)") \
 	    (org-export-to-file (quote texinfo) "$(TEXI)"))'
@@ -1153,7 +1179,7 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
   html: $(HTML)
   $(HTML): $(TEXI)
 	  makeinfo --html $(TEXI)
-	  $(CMPRPL) $(DIR) $(OLDDIR)
+	  $(CMPRPL) $(DIR) $(DIR_OLD)
   open-html: html
 	  open $(HTML)
 
@@ -1165,7 +1191,38 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 
   sync: $(HTML)
 	  $(S3SYNC)
-	  [[ $(VERS) != $(S3VERS) ]] && $(S3MOVE) || :
+	  [[ $(VERS) != $(S3VERS) ]] && { $(S3MOVE); make homepage; } || :
+
+  homepage: $(ORG)
+	  curl -i \
+	       -H "Authorization: token $(TOKEN)" \
+	       -H "Content-Type: application/json" \
+	       -X PATCH \
+	       -d '{"homepage":"https://$(AWS_S3_BUCKET)/$(DIR)-$(VERS)"}' \
+	       https://api.github.com/repos/wlharvey4/AWS-Guide
+
+  update: $(ORG)
+	  emacs -Q --batch --eval \
+	  '(progn \
+	     (require (quote org)) \
+	     (require (quote ob)) \
+	     (require (quote ob-shell)) \
+	     (find-file "$(TEMPLATE)") \
+	     (goto-char (point-min)) \
+	     (search-forward "* Build Tools") \
+	     (org-beginning-of-line) \
+	     (org-copy-subtree) \
+	     (kill-buffer) \
+	     (find-file "$(ORG)") \
+	     (goto-char (point-min)) \
+	     (search-forward "* Build Tools") \
+	     (org-beginning-of-line) \
+	     (org-yank) \
+	     (org-cut-subtree) \
+	     (save-buffer) \
+	     (kill-buffer) \
+	     (setq org-confirm-babel-evaluate nil) \
+	     (org-babel-tangle-file "$(ORG)"))'
 
   clean:
 	  -rm *~
@@ -1174,12 +1231,12 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 	  -rm -rf *.{texi*,info*,html*,pdf*} $(DIR) $(TOOLS)
 
   help:
-	  @echo '"make default" makes the .texi file \
-	  the html files, and opens the index.html file'
+	  @echo '"make default" makes the .texi file, the .info file, \
+	  the html files, and the .pdf file.'
 	  @echo
 
-	  @echo '"make all" makes the .texi, .info, .pdf, and html distribution'
-	  @echo '"make sync" syncs the html files in the AWS S3 bucket HOME; \
+	  @echo '"make sync" syncs the html files in the AWS S3 bucket BUCKET; \
+	  you must have your AWS S3 bucket name in the env var AWS_S3_BUCKET; \
 	  You must have your AWS credentials installed in ~/.aws/credentials'
 	  @echo
 
@@ -1201,6 +1258,16 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 	  and removes the build directory'
 
 #+end_src
+
+*** TODO Next
+1. The CloudFront configuration needs to be updated recognize the new version
+   directory that is created as part of the ~sync~ operation.
+
+2. Update the GitHub HOME website link for each new sync operation.
+
+3. Store on GitHub a version of each other format upon a sync operation (i.e.,
+   the INFO and PDF versions)
+
 ** Get Org Filename
 This program simply uses the name of the buffer to obtain the name of the
 filename to add to the Makefile.
@@ -1239,27 +1306,55 @@ the Makefile.
 :dependency: ">= bash v4"
 :END:
 This program obtains the version number of the code currently uploaded to the
-S3 bucket by obtaining a directly listing of top-level directories, which are
+S3 bucket by obtaining a directory listing of top-level directories, which are
 in the form ~PRE <dir>-v#.#.#/~, and performs a regular expression search with
-a parenthesized match on the version numbers.  The program will exit with an
-error if there is no match, but will return the version number as a string if
-there is a match.
+a parenthesized match on the version numbers.  The program will exit with 'nil'
+if there is no match, but will return the version number as a string if there
+is a match.
 
 Note that the regular expression matching requires at least Bash version 4 or
 above.
 
 #+caption:Get S3 Version
 #+name:get-s3-version
-#+header: :results output
 #+header: :var dir=get-org-lc-filename()
 #+header: :var file_version=get-file-version()
-#+begin_src sh :eval yes
-  [[ ${file_version} = v0.0.0/ ]] && { echo "nil"; exit 0; } || :
-  re=${dir}'-(v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+)'
-  verpre=$(aws2 s3 ls s3://pinecone-forest.com/) ### TODO
-  [[ $verpre =~ $re ]] && : || { echo "nil"; exit 0; }
-  ver=${BASH_REMATCH[1]}
-  echo "${ver}"
+#+header: :results output
+#+header: :eval yes
+#+header: :shebang "#! /usr/bin/env bash"
+#+begin_src sh
+  if [[ ${file_version} = "v0.0.0/" ]]
+  then
+      echo -n "nil"
+
+  else
+      re=${dir}'-(v[[:digit:]]+\.[[:digit:]]+\.[[:digit:]]+)'
+
+      # obtain a list of directories in the aws s2 bucket
+      verpre=$(aws2 s3 ls s3://${AWS_S3_BUCKET}/)
+
+      # check for a match; if one, return the version number; else return 'nil'
+      if [[ $verpre =~ $re ]]
+      then
+		echo -n ${BASH_REMATCH[1]}/
+      else
+		echo -n "nil"
+      fi
+  fi
+#+end_src
+
+** Get GitHub User Info
+This code calls the GitHub API from ~curl~ using the token stored in the env
+var =GITHUB_TOKEN= to obtain the GitHub user’s information.  The user’s
+information is returned as a JSON string.  Ths code returns one of the values
+based on a given key.  The default key used is =html_url=, but you can ask for
+any valid key by supplying an argument in the invocation, such as:
+: get-github-user-info(login)
+
+#+name:get-github-user-info
+#+header: :var key="html_url"
+#+begin_src sh :eval yes :results value
+  node -pe 'JSON.parse(process.argv[1]).'$key "$(curl -H "Authorization: token ${GITHUB_TOKEN}" https://api.github.com/user)"
 #+end_src
 
 ** Compare Replace
@@ -1267,10 +1362,8 @@ above.
 #+begin_comment
 The following source code tangles all files during an export operation.  This
 is to make sure the ~cmprpl~ source code exists in the ~tools/~ directory
-before running the Makefile target =html=, as this directory is deleted upon a
-~make clean-dist~.  It also makes sure there is a Makefile on an initial
-export, although the Makefile is never thereafter deleted.  The following code
-is not exported.
+before running the Makefile target =html=.  It also makes sure there is a
+Makefile on an initial export.  The following code is not exported.
 #+end_comment
 
 #+name:tangle-org-file
@@ -1283,36 +1376,42 @@ The ~cmprpl~ source code attempts to resolve the issue of identical exported
 code having different time stamps, thus defeating the benefit provided by the
 ~aws2 s3 sync~ command uploading only changed files.
 
-This program makes sure that a generated HTML directory exists: $NEWDIR.  If it
+This program makes sure that a generated HTML directory exists: $DIR_NEW.  If it
 doesn’t, then it is in an improper state and the program stops with an error
 message.
 
-The program then checks if an old directory exists, $OLDDIR.  If one doesn’t,
+The program then checks if an old directory exists, $DIR_OLD.  If one doesn’t,
 then one is created by copying the current new directory.  This provides a
-baseline for comparisons going forward.
+baseline for comparisons going forward.  The program exits at that point.
+
+Given that $DIR_OLD exists, the program then loops through all files in $DIR_OLD
+and compares them to the files in $DIR_NEW.  If the files are identical, the
+$DIR_OLD file replaces the $DIR_NEW file while retaining the old time stamp.  If
+a file is different, then the $DIR_NEW file replaces the $DIR_OLD file, thus
+giving it updated content and an updated time stamp.
 
 The program then loops through all of the files in the new directory and copies
 any that do not exist in the old directory.  Now both directories should be in
 sync.
 
-It is important to retain the $OLDDIR for as long as possible to reap the most
-benefits from the AWS S3 ~sync~ command.
+It is important to retain the $DIR_OLD directory for as long as possible to reap
+the most benefits from the AWS S3 ~sync~ command.
 
 #+caption:Compare Replace program
 #+name:cmprpl
 #+header: :mkdirp t
 #+header: :shebang "#!/usr/bin/env bash"
-#+begin_src sh :tangle tools/cmprpl :eval no-export
+#+begin_src sh :tangle tools/cmprpl
   [[ $# -eq 2 ]] || { echo "ERROR: Incorrect command line arguments"; exit 1; }
-  NEWDIR=$1
-  OLDDIR=$2
+  DIR_NEW=$1
+  DIR_OLD=$2
 
-  [[ -d $NEWDIR ]] || { echo "ERROR: $NEWDIR does not exist"; exit 1; }
-  [[ -d $OLDDIR ]] || { echo "CREATING: $OLDDIR does not exist"; cp -a $NEWDIR $OLDDIR; exit 0; }
+  [[ -d $DIR_NEW ]] || { echo "ERROR: $DIR_NEW does not exist"; exit 1; }
+  [[ -d $DIR_OLD ]] || { echo "CREATING: $DIR_OLD does not exist"; cp -a $DIR_NEW $DIR_OLD; exit 0; }
 
-  for oldfile in $OLDDIR/*
+  for oldfile in $DIR_OLD/*
   do
-      newfile=$NEWDIR/$(basename $oldfile)
+      newfile=$DIR_NEW/$(basename $oldfile)
       if [[ -e $newfile ]]
       then
 	      if cmp -s $newfile $oldfile
@@ -1329,9 +1428,9 @@ benefits from the AWS S3 ~sync~ command.
       fi
   done
 
-  for newfile in $NEWDIR/*
+  for newfile in $DIR_NEW/*
   do
-      oldfile=$OLDDIR/$(basename $newfile)
+      oldfile=$DIR_OLD/$(basename $newfile)
       [[ -e $oldfile ]] || { printf "${BLUE}copying NEW to OLD${CLEAR}: "
 			     cp -vp $newfile $oldfile; }
   done

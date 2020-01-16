@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-16 08:42
-#+macro:version Version 0.0.11
+#+date:2020-01-16 12:57
+#+macro:version Version 0.0.12
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -388,6 +388,7 @@ we’ll focus on using it for four tasks:
 4. Using the REPL
 
 
+#+cindex:java, version
 Before continuing, make sure you have Java version 1.6 or later installed.  You
 can check your version by running:
 
@@ -404,14 +405,22 @@ the Clojure compiler, ~clojure.jar~.
 
 **** Creating a New Clojure Project
 
+#+pindex:project, create new
 Creating a new Clojure project is very simple.  A single Leiningen command
 creates a project skeleton.  Later, you’ll learn how to do tasks like
 incorporate Clojure libraries.
 
+#+cindex:@command{lein}
 Create your first Clojure project by typing the following in your terminal:
 
-#+begin_src sh :eval no
-lein new app clojure-noob
+: lein new app clojure-noob
+
+#+name:new-clojure-project
+#+header: :results output :exports results
+#+begin_src sh
+  [[ ! -d projects ]] && mkdir -p projects/ && cd projects
+  lein new app clojure-noob
+  tree clojure-noob
 #+end_src
 
 **** Running the Clojure Project
@@ -1070,6 +1079,8 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 :appendix: t
 :dependency1: "make"
 :dependency2: "AWS Account with ~/.aws/credentials and ~/.aws/config"
+:dependency3: "S3 bucket set up for serving a static web pages"
+:dependency4: "GitHub Account with personal token"
 :env_var1: ORG_TEMPLATE
 :env_var2: EMACSLOADPATH
 :env_var3: AWS_S3_BUCKET
@@ -1230,6 +1241,7 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 
   dist-clean: clean
 	  -rm -rf *.{texi*,info*,html*,pdf*} $(DIR) $(TOOLS)
+	  -for dir in *; do [ -d $$dir -a $$dir != "$(DIR_OLD)" ] && rm -vr $$dir; done
 
   wiped-clean: dist-clean
 	  -rm -rf Makefile $(DIR_OLD)

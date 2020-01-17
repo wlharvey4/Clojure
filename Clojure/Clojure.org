@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-17 07:10
-#+macro:version Version 0.0.13
+#+date:2020-01-17 07:46
+#+macro:version Version 0.0.14
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -103,6 +103,9 @@ classes.
 :END:
 
 ** Forward
+:PROPERTIES:
+:unnumbered: t
+:END:
 #+cindex:John McCarthy
 #+cindex:Lisp
 You will eventually learn through reading this book that programming is more
@@ -418,10 +421,54 @@ Create your first Clojure project by typing the following in your terminal:
 #+name:new-clojure-project
 #+header: :results output :exports results
 #+begin_src sh
-  [[ ! -d projects ]] && mkdir -p projects/ && cd projects
-  lein new app clojure-noob
+  if [[ ! -d projects ]]
+  then
+      mkdir -p projects/
+      cd projects
+      lein new app clojure-noob
+  else
+      cd projects
+  fi
   tree clojure-noob
 #+end_src
+
+#+RESULTS: new-clojure-project
+#+begin_example
+clojure-noob
+├── CHANGELOG.md
+├── LICENSE
+├── README.md
+├── doc
+│   └── intro.md
+├── project.clj
+├── resources
+├── src
+│   └── clojure_noob
+│       └── core.clj
+└── test
+    └── clojure_noob
+        └── core_test.clj
+
+6 directories, 7 files
+#+end_example
+
+#+cindex:project skeleton
+This project skeleton isn’t special or required by Clojure.  It is a convention
+used by Leiningen.  You will be using Leiningen to build and run Clojure apps,
+and Leiningen expects your app to have this structure.
+
+#+cindex:@file{project.clj}
+- ~project.clj~ is a configuration file for Leiningen.  It helps Leiningen
+  answer such questions as “What dependencies does this project have?” and
+  “When this Clojure program runs, what function should run first?”
+
+- In general, you’ll save your source code in ~src/<project_name>/~.  This this
+  case, the file ~src/clojure_noob/core.clj~ is where you will be writing  your
+  Clojure code for a while.
+
+- The ~test/~ directory containts tests;
+
+- The ~resources/~ directory is where you store assets like immages.
 
 **** Running the Clojure Project
 

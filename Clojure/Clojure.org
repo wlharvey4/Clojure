@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-17 07:46
-#+macro:version Version 0.0.14
+#+date:2020-01-17 10:07
+#+macro:version Version 0.0.15
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -375,8 +375,59 @@ For now the main concepts you need to understand are these:
 - That Java bytecode is then executed by the same JVM process already running
   ~clojure.jar~
 
-*** Leiningen
+*** Leiningen                                                :dependencies:
+:PROPERTIES:
+:dependency1: shell
+:dependency2: bash
+:dependency3: java
+:dependency4: clojure
+:END:
 
+This code checks for installed dependencies.  If something is not installed,
+then the code in this Org project will not work properly.  Make sure you have
+Java version 1.6 or later installed, and Bash version 4 or later installed.
+Also make sure your Org setup can work with the programming languages 'shell
+and 'clojure, in addition to 'elisp.  These should be added to
+'org-babel-load-languages if they are not.
+
+#+name:check-language-depencencies
+#+header: :results output :exports results
+#+begin_src elisp
+  (princ "This will now check the Org variable \'org-babel-load-languages to make sure it includes 
+  \'shell and \'clojure.\n\n")
+  (if
+      (assoc 'shell org-babel-load-languages)
+      (princ "\'shell enabled\n")
+    (princ "\'shell not enabled\n"))
+  (if
+      (assoc 'clojure org-babel-load-languages)
+      (princ "\'clojure enabled")
+    (princ "\'clojure not enabled"))
+#+end_src
+
+#+RESULTS: check-language-depencencies
+: shell enabled
+: clojure enabled
+
+#+name:check-java-bash-dependencies
+#+header: :results output :exports results
+#+begin_src sh
+echo "This will now check whether Java and Bash are installed on your system."
+echo
+echo Java:
+java -version 2>&1
+echo
+echo Bash:
+bash --version
+#+end_src
+
+#+RESULTS: check-java-bash-dependencies
+: GNU bash, version 5.0.11(1)-release (x86_64-apple-darwin18.7.0)
+: Copyright (C) 2019 Free Software Foundation, Inc.
+: License GPLv3+: GNU GPL version 3 or later <http://gnu.org/licenses/gpl.html>
+: 
+: This is free software; you are free to change and redistribute it.
+: There is NO WARRANTY, to the extent permitted by law.
 
 #+cindex:Leiningen
 Most Clojurists use Leiningen to build and manage their projects.  For now
@@ -391,22 +442,15 @@ we’ll focus on using it for four tasks:
 4. Using the REPL
 
 
-#+cindex:java, version
-Before continuing, make sure you have Java version 1.6 or later installed.  You
-can check your version by running:
-
-#+cindex:java version
-#+name:java-version
-#+begin_src sh :results scalar :exports both
-java -version 2>&1
-#+end_src
-
 #+cindex:@code{clojure.jar}
-Install Leiningen using the instructions on the Leiningen home page at
+[[*Leiningen Installation Instructions][Install Leiningen]] using the instructions on the Leiningen home page at
 http://leiningen.org.  When you install Leiningen, it automatically downloads
 the Clojure compiler, ~clojure.jar~.
 
-**** Creating a New Clojure Project
+**** Creating a New Clojure Project                         :dependencies:
+:PROPERTIES:
+:dependency5: tree
+:END:
 
 #+pindex:project, create new
 Creating a new Clojure project is very simple.  A single Leiningen command
@@ -429,28 +473,14 @@ Create your first Clojure project by typing the following in your terminal:
   else
       cd projects
   fi
-  tree clojure-noob
+
+  [[ $(tree --version) ]] && \
+	tree clojure-noob || {
+	   echo "Install the 'tree' command to see the project skeleton."
+	   echo http://mama.indstate.edu/users/ice/tree
+	}
+
 #+end_src
-
-#+RESULTS: new-clojure-project
-#+begin_example
-clojure-noob
-├── CHANGELOG.md
-├── LICENSE
-├── README.md
-├── doc
-│   └── intro.md
-├── project.clj
-├── resources
-├── src
-│   └── clojure_noob
-│       └── core.clj
-└── test
-    └── clojure_noob
-        └── core_test.clj
-
-6 directories, 7 files
-#+end_example
 
 #+cindex:project skeleton
 This project skeleton isn’t special or required by Clojure.  It is a convention
@@ -472,7 +502,99 @@ and Leiningen expects your app to have this structure.
 
 **** Running the Clojure Project
 
+Open the source file ~src/clojure_noob/core.clj~ in an editor.  It should look
+like this:
+
+#+pindex:clojure_nobe/core.clj
+#+caption: clojure-noob.core.clj File
+#+name:initial-clojure_noob-core.clj
+#+header: :results output verbatim
+#+header: :exports results
+#+header: :dir projects/clojure-noob/src/clojure_noob
+#+begin_src sh
+cat -n core.clj
+#+end_src
+
+#+RESULTS: initial-clojure_noob-core.clj
+:      1	(ns clojure-noob.core
+:      2	  (:gen-class))
+:      3	
+:      4	(defn -main
+:      5	  "I don't do a whole lot ... yet."
+:      6	  [& args]
+:      7	  (println "Hello, World!"))
+
+#+cindex:namespace
+The code ~(ns ...)~ declares a /namespace/.  Do not worry about namespaces for
+the moment.
+
+#+cindex:entry point
+#+cindex:@code{-main} function
+The ~-main~ function is the /entry point/ to your program.
+
+#+cindex:@code{lein run}
+To run the program, navigate to the ~clojure_noob/~ directory and enter the
+following command:
+
+#+caption: Run a Project from the Command Line
+#+name:run-project-clojure-noob
+#+header: :dir projects/clojure-noob/src/clojure_noob
+#+header: :results output :exports both
+#+begin_src sh
+lein run
+#+end_src
+
+#+RESULTS: run-project-clojure-noob
+: Hello, World!
+
+If you see “Hello, World!” output, then your Clojure project ran successfully.
+You created a function ~-main~, and it runs when you execute ~lein run~ at the
+command line.
+
 **** Building the Clojure Project
+#+cindex:jar file, create
+You can create a stand-alone file that anyone with Java installed can execute.
+To create the file, run this:
+
+#+cindex:@command{lein uberjar}
+#+caption:Create a jar File
+#+name:create-first-jar-file
+#+header: :dir projects/clojure-noob
+#+header: :results output :exports both
+#+begin_src sh
+lein uberjar
+#+end_src
+
+#+RESULTS: create-first-jar-file
+: Created /Users/pine/Dev/Languages/Clojure/Clojure/projects/clojure-noob/target/uberjar/clojure-noob-0.1.0-SNAPSHOT.jar
+: Created /Users/pine/Dev/Languages/Clojure/Clojure/projects/clojure-noob/target/uberjar/clojure-noob-0.1.0-SNAPSHOT-standalone.jar
+
+This command creates the file:
+
+: ./target/uberjar/clojure-noob-0.1.0-SNAPSHOT-standalone.jar
+
+You can make Java execute it by running this:
+
+#+caption:Run a jar File
+#+name:run-first-jar-file
+#+header: :dir projects/clojure-noob
+#+header: :results output :exports both
+#+begin_src sh
+java -jar target/uberjar/clojure-noob-0.1.0-SNAPSHOT-standalone.jar
+#+end_src
+
+#+RESULTS: run-first-jar-file
+: Hello, World!
+
+Again, if you see the output “Hello, World!” then Java has successfully run
+your project from the ~.jar~ file.  You can distribute and run this program on
+virtually every platform.
+
+You now have all the basic details you need to build, run, and distribute
+(very) basic Clojure programs.  In later chapters, you’ll learn more details
+about what Leiningen is doing when you run the preceding commands, and gaining
+a complete understanding of Clojure’s relationship to the JVM and how you cna
+run production code.
 
 **** Using the REPL
 

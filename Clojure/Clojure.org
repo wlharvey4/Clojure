@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-16 12:57
-#+macro:version Version 0.0.12
+#+date:2020-01-17 07:10
+#+macro:version Version 0.0.13
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -451,18 +451,20 @@ Create your first Clojure project by typing the following in your terminal:
 
 * About Leiningen
 
-“for automating Clojure projects without setting your hair on fire”
+“(Leiningen is) for automating Clojure projects without setting your hair on
+fire.”
 
-Leiningen is the easiest way to use Clojure.  With a focus on project
-automation and declarative configuration, it gets out of your way and lets you
-focus on your code.
+Leiningen is the easiest way to use Clojure.  With a focus on /project
+automation/ and /declarative configuration/, it gets out of your way and lets
+you focus on your code.
 
 - [[https://leiningen.org][Leiningen Home]]
 
-- [[https://github.com/technomancy/leiningen][Leiningen GitHub]]
+- [[https://github.com/technomancy/leiningen][Leiningen on GitHub]]
 
 
-Installed version:
+#+cindex:Leiningen, version
+Installed version of Leining on this computer:
 
 #+begin_comment
 The following code does not produce an output when this file is exported to
@@ -471,7 +473,9 @@ dispatcher.  No idea why.
 #+end_comment
 
 #+name:lein-version
-#+begin_src sh :results output verbatim :exports both
+#+heading: :results output verbatim
+#+heading: :exports both
+#+begin_src sh
 lein --version
 #+end_src
 
@@ -486,8 +490,11 @@ lein --version
 
 ** Leiningen Installation Instructions
 
+#+cindex:installation, Leiningen
 #+cindex:Leiningen, install
-#+cindex:OpenJDK
+#+cindex:OpenJDK, require
+#+cindex:Java, require
+#+cindex:requirement, Java
 Leiningen and Clojure require Java.  OpenJDK version 8 is recommended at this
 time.
 
@@ -503,13 +510,14 @@ time.
 ** Leiningen Tutorial
 
 #+cindex:Leiningen tutorial
-#+cindex:tutorial
-You can read the tutorial by running 
+#+cindex:tutorial, Leiningen
+You can read the tutorial by running from the command line:
 : lein help tutorial
 
-- [[https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md][Tutorial on GitHub]]
+- [[https://github.com/technomancy/leiningen/blob/stable/doc/TUTORIAL.md][Tutorial source code on GitHub]]
 
 
+#+cindex:features, Leiningen
 Leiningen is for automating Clojure projects.  It offers various
 project-related tasks and can:
 
@@ -527,6 +535,7 @@ project-related tasks and can:
 
 #+texinfo:@heading What This Tutorial Covers
 
+#+cindex:tutorial, features
 This tutorial will briefly cover
 - project structure,
 - dependency management,
@@ -563,6 +572,9 @@ example, ~repl~ or ~help~) can also be called from any directory.
 
 *** Creating a Leiningen Project
 
+#+cindex:project, new Leiningen
+#+cindex:new Leiningen project
+#+cindex:@code{lein new}
 Generate a new project:
 : lein new app <project-name>
 
@@ -620,7 +632,8 @@ newcomers, and while they are mostly outside the scope of this tutorial you can
 
 #+texinfo:@heading @file{project.clj}
 
-Your project.clj file will start off looking something like this:[fn:1]
+#+cindex:@file{project.clj}
+Your ~project.clj~ file will start off looking something like this:[fn:1]
 
 #+begin_src clojure :eval no
 (defproject my-stuff "0.1.0-SNAPSHOT"
@@ -636,9 +649,12 @@ Your project.clj file will start off looking something like this:[fn:1]
 
 ** Leiningen Documentation
 
+#+cindex:help
+#+cindex:@code{lein help}
 #+cindex:documetation
 #+cindex:FAQ
 #+cindex:sample @file{project.clj}
+#+cindex:@file{project.clj} sample code
 - FAQ:
 : lein help faq
 
@@ -651,14 +667,18 @@ Your project.clj file will start off looking something like this:[fn:1]
 
 ** Leiningen Profiles
 
+#+cindex:profile, Leiningen
 See https://github.com/technomancy/leiningen/blob/stable/doc/PROFILES.md
 
 ** Deploying Leiningen Projects
 
+#+cindex:deploy Leiningen project
+#+cindex:project, deploy Leiningen
 See https://github.com/technomancy/leiningen/blob/stable/doc/DEPLOY.md
 
 ** Leiningen Plugins
 
+#+cindex:plugin, Leiningen
 #+texinfo:@heading Writing Leiningen Plugins
 
 See https://github.com/technomancy/leiningen/blob/stable/doc/PLUGINS.md

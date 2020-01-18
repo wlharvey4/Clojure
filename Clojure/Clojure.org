@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-17 18:30
-#+macro:version Version 0.0.17
+#+date:2020-01-17 18:57
+#+macro:version Version 0.0.18
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -102,6 +102,9 @@ classes.
 :isbn-13:  978-1-59327-591-4
 :END:
 
+
+[[https://www.braveclojure.com/clojure-for-the-brave-and-true/][Read the Online Version]]
+
 ** Forward
 :PROPERTIES:
 :unnumbered: t
@@ -662,6 +665,42 @@ You’ve run your first Clojure program.  You’ve become acquainted with the RE
 one of the most important tools for developing Clojure software.
 
 ** How to use Emacs
+
+#+cindex:Emacs
+It is worthwhile to invest some time in setting up your editor to work with a
+REPL.  The reason the author recommends Emacs is that it offers tight
+integration with a Clojure REPL, which allows you to instantly try out your
+code as you write.  Emacs is also great for working with any Lisp dialect.
+
+*** Emacs Installation
+#+cindex:Emacs installation
+You should use the latest major version of Emacs for the platform you are
+working on.
+
+- OS X :: Install vanilla Emacs as a Mac app from http://emacsformacosx.com/
+
+- Ubuntu :: Follow the instructions at
+            https://launchpad.net/~ubuntu-elisp/+archive/ppa[fn:3]
+
+- Windows :: You can find a binary at http://ftp.gnu.org/gnu/emacs/windows.
+
+
+After installing, open Emacs.
+
+*** Configuration of Emacs
+#+cindex:configuring Emacs
+The author has made a repository of all the files you need to configure Emacs
+for Clojure available in the book’s resources at
+https://github.com/flyingmachine/emacs-for-clojure/archive/book1.zip
+
+*NOTE:* These tools are constantly being updated, so if the instructions below
+don't work for you or you want to use the latest configuration, please read the
+instructions:
+
+- [[https://github.com/flyingmachine/emacs-for-clojure][Emacs configuration files on GitHub]] (includes instructions)
+
+- [[https://github.com/braveclojure/cftbat-code/][All the Code for the book on GitHub]]
+
 ** Clojure Crash Course
 ** Core Functions in Depth
 ** Functional Programming
@@ -1779,6 +1818,8 @@ Copyright \copy 2020 by {{{author}}}
 * Local Variables                                                  :noexport:
 
 * Footnotes
+
+[fn:3] 
 
 [fn:1]Org requires [[https://github.com/clojure-emacs/clojure-mode][Clojure-mode]] to work with clojure source code.  Clojure mode
 provides Emacs font-lock, indentation, navigation and refactoring for the

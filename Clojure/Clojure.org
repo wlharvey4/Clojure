@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-17 18:02
-#+macro:version Version 0.0.16
+#+date:2020-01-17 18:30
+#+macro:version Version 0.0.17
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -597,10 +597,69 @@ a complete understanding of Clojure’s relationship to the JVM and how you cna
 run production code.
 
 **** Using the REPL
+#+cindex:REPL
+The REPL is a tool for experimenting with code.  It allows you to interact with
+a running program and quickly try out ideas.  It does this by presenting you
+with a prompt where you can enter code.  It then /reads/ your input,
+/evaluates/ it, /prints/ the result, and /loops/, presenting you with a prompt
+again.
 
+This process enables a quick feedback cycle that isn’t possible in most other
+languages.  REPL development is an essential part of the Lisp experience.
+
+#+texinfo:@heading Start a REPL
+
+From within the ~projects/clojure-noob/src/clojure_noob/~ directory, type:
+
+: lein repl
+
+The output should look like:
+
+#+begin_example
+nREPL server started on port 55877 on host 127.0.0.1 - nrepl://127.0.0.1:55877
+REPL-y 0.4.3, nREPL 0.6.0
+Clojure 1.10.0
+OpenJDK 64-Bit Server VM 1.8.0_232-b09
+    Docs: (doc function-name-here)
+          (find-doc "part-of-name-here")
+  Source: (source function-name-here)
+ Javadoc: (javadoc java-object-or-class-here)
+    Exit: Control+D or (exit) or (quit)
+ Results: Stored in vars *1, *2, *3, an exception in *e
+
+clojure-noob.core=>
+#+end_example
+
+#+cindex:namespace
+The last line, ~clojore-noob.core~, tells you that you are in the
+~clojure-noob.core~ namespace.  The prompt also indicates that your code is
+loaded in the REPL, and you can execute the functions that are defined.  Right
+now only one function, ~-main~, is defined.  Execute it now:
+
+#+begin_example
+clojure-noob.core=> (-main)
+Hello, World!
+nil
+clojure-noob.core=>
+#+end_example
+
+#+texinfo:@heading Secure Shell (SSH)
+
+Conceptually, the REPL is similar to Secure Shell (SSH).  In the same way that
+you can use SSH to interact with a remote server, the Clojure REPL allows you
+to interact with a running Clojure process.  This feature can be very powerful
+because you can even attach a REPl to a live production app and modify your
+program as it runs.
 *** Clojure Editors
 
+#+cindex:Emacs
+If you wanty a good tutorial on a powerful editor, Chapter 2 covers Emacs, the
+most popular editor amount Clojurists.  Emacs offers tighty integration with
+the Clojure REPL and is well-suited to writing Lisp code.
+
 *** Summary
+You’ve run your first Clojure program.  You’ve become acquainted with the REPL,
+one of the most important tools for developing Clojure software.
 
 ** How to use Emacs
 ** Clojure Crash Course

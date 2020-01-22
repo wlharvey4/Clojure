@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-17 18:57
-#+macro:version Version 0.0.18
+#+date:2020-01-21 19:00
+#+macro:version Version 0.0.19
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -104,6 +104,8 @@ classes.
 
 
 [[https://www.braveclojure.com/clojure-for-the-brave-and-true/][Read the Online Version]]
+
+[[https://github.com/braveclojure/cftbat-code/][All the Code for the book on GitHub]]
 
 ** Forward
 :PROPERTIES:
@@ -687,10 +689,10 @@ working on.
 
 After installing, open Emacs.
 
-*** Configuration of Emacs
+*** Emacs Configuration
 #+cindex:configuring Emacs
 The author has made a repository of all the files you need to configure Emacs
-for Clojure available in the book’s resources at
+for Clojure, available in the book’s resources at
 https://github.com/flyingmachine/emacs-for-clojure/archive/book1.zip
 
 *NOTE:* These tools are constantly being updated, so if the instructions below
@@ -699,7 +701,9 @@ instructions:
 
 - [[https://github.com/flyingmachine/emacs-for-clojure][Emacs configuration files on GitHub]] (includes instructions)
 
-- [[https://github.com/braveclojure/cftbat-code/][All the Code for the book on GitHub]]
+*** The Emacs Configuration Files
+
+
 
 ** Clojure Crash Course
 ** Core Functions in Depth
@@ -1380,6 +1384,8 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 #+begin_src makefile
   TEMPLATE = $(ORG_TEMPLATE)
 
+  SAVE = resources
+
   ### PROGRAM
   PROJ   = <<get-org-filename()>>
   DIR    = <<get-org-lc-filename()>>
@@ -1449,18 +1455,17 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 	  @[ -d ~/.aws -a -f ~/.aws/credentials -a -f ~/.aws/config ] && \
 	     printf "$${GREEN}~/.aws credentials and config: set.$${CLEAR}\n" || \
 	     { printf "$${RED}~/.aws 'credentials' and 'config' must be set.$${CLEAR}\n"; exit 1; }
-	  @emacs --batch --eval \
+	  @emacs --batch --load="~/.emacs" --eval \
 	    '(progn \
-		(load "~/.emacs") \
 		(if \
 		  (member (quote texinfo) org-export-backends) \
-		  (princ "texinfo backend IS installed in org-export-backends") \
-		  (princ "texinfo backend IS NOT installed in org-export-backends")) \
+		  (princ "texinfo backend: INSTALLED in org-export-backends") \
+		  (princ "texinfo backend: NOT INSTALLED in org-export-backends")) \
 		(terpri) \
 		(if \
 		   org-confirm-babel-evaluate \
-		   (princ "org-confirm-babel-evaluate IS SET to t; consider setting to nil") \
-		   (princ "org-confirm-babel-evaluate IS nil")))'
+		   (princ "org-confirm-babel-evaluate: SET to t; consider setting to nil") \
+		   (princ "org-confirm-babel-evaluate: SET to nil")))'
 
   open-org: $(ORG)
 	  emacsclient $(ORG) &
@@ -1540,7 +1545,11 @@ CIDER gives you the ability to run your tests without ever leaving your editor.
 
   dist-clean: clean
 	  -rm -rf *.{texi*,info*,html*,pdf*} $(DIR) $(TOOLS)
-	  -for dir in *; do [ -d $$dir -a $$dir != "$(DIR_OLD)" ] && rm -vr $$dir; done
+	  -for dir in *; \
+	   do \
+		  [ -d $$dir -a $$dir != "$(DIR_OLD)" -a $$dir != $(SAVE) ] && \
+		  rm -vr $$dir; \
+	   done
 
   wiped-clean: dist-clean
 	  -rm -rf Makefile $(DIR_OLD)
@@ -1604,7 +1613,7 @@ fallback default.
 #+begin_src emacs-lisp :eval yes
   (save-excursion
     (if
-        (re-search-forward "^[[:space:]]+#\\+texinfo_filename:\\(.*\\)" nil t)
+        (re-search-forward "^[[:space:]]*#\\+texinfo_filename:\\(.*\\)" nil t)
         (file-name-sans-extension (match-string 1))
       (downcase (file-name-base))))
 #+end_src
@@ -1815,8 +1824,6 @@ Copyright \copy 2020 by {{{author}}}
 #+texinfo_printed_title:All About Clojure
 
 
-* Local Variables                                                  :noexport:
-
 * Footnotes
 
 [fn:3] 
@@ -1829,6 +1836,9 @@ Clojure(Script) programming language.
 
 [fn:2]CIDER will automatically work with Leiningen 2.9.0+ or Boot 2.8.3+.
 Older versions are not supported.
+
+* Local Variables                                                  :noexport:
+
 # Local Variables:
 # fill-column: 79
 # indent-tabs-mode: t

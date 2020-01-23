@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-23 06:59
-#+macro:version Version 0.0.21
+#+date:2020-01-23 08:24
+#+macro:version Version 0.0.22
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -699,7 +699,7 @@ https://github.com/flyingmachine/emacs-for-clojure/archive/book1.zip
 don't work for you or you want to use the latest configuration, please read the
 instructions:
 
-- [[https://github.com/flyingmachine/emacs-for-clojure][Emacs configuration files on GitHub]] (includes instructions)
+- Go to the [[https://github.com/flyingmachine/emacs-for-clojure][Emacs configuration files on GitHub]] (includes instructions)
 
 *** CFBT Init File
 :PROPERTIES:
@@ -715,7 +715,10 @@ deleting it.
 
 For the time being, I will use the second option: keep both and provide a means
 of toggling between them.  These files will go into a directory
-~.emacs.d-cfbt/~.
+~/.emacs.d-cfbt/~.  The current ~/.emacs.d~ will be moved into
+~/.emacs.d-original~.  A sym-link will be set up to use either
+~/.emacs.d-original~ or ~/.emacs-d-cfbt~.  Emacs should be restarted when a
+switch is made.
 
 #+texinfo:@heading Custom Init.el for Clojure for the Brave and True
 
@@ -752,9 +755,10 @@ archive-contents
 
 #+texinfo:@heading Add an ELPA Directory
 
-#+name:cfbt-elpa
+#+name:cfbt-elpa-themes
 #+begin_src sh :results output :eval yes :exports both
-mkdir ~/.emacs.d-cfbt/elpa
+mkdir -v ~/.emacs.d-cfbt/elpa
+mkdir -v ~/.emacs.d-cfbt/themes
 #+end_src
 
 **** Package Setup                                              :noexport:
@@ -1305,6 +1309,52 @@ package-install=; add in your own as you wish:
 
   ;; no bell
   (setq ring-bell-function 'ignore)
+#+end_src
+
+*** Switching Between Configuration Setups
+
+#+name:cfbt-toggle-init-files
+#+header: :mkdirp yes
+#+header: :tangle tools/toggle-init
+#+header: :shebang "#!/usr/bin/env bash"
+#+begin_src sh
+  read -N 1 -ep "Toggle ~/.emacs.d ? "
+  echo REPLY is $REPLY
+  [[ $REPLY =~ "y" ]] || {
+      echo "Aborting toggle procedure."
+      exit 0
+  }
+
+  if [[ -d ~/.emacs.d ]]
+  then
+      if [[ -h ~/.emacs.d ]]
+      then
+	  if [[ $(readlink ~/.emacs.d) == ".emacs.d-original" ]]
+	  then
+	      ln -vsF ".emacs.d-cfbt" ~/.emacs.d
+	  else
+	      ln -vsF ".emacs.d-original" ~/.emacs.d
+	  fi
+
+      else
+	  cp -vR ~/.emacs.d ~/.emacs.d-original
+	  rm -Rf ~/.emacs.d
+	  ln -vs ~/.emacs.d-original ~/.emacs.d
+      fi
+  else
+      if [[ -d ~/.emacs.d-original ]]
+      then
+	  ln -vsF ~/.emacs.d-original ~/.emacs.d
+      else
+	  if [[ -d ~/.emacs.d-cfbt ]]
+	  then
+	      ln -vsF ~/.emacs.d-cfbt ~/.emacs.d
+	  else
+	      echo "Neither ~/.emacs.d nor ~/.emacs.d-original nor ~/.emacs.d-cfbt exists."
+	      echo "Aborting toggle procedure."
+	  fi
+      fi
+  fi
 #+end_src
 ** Clojure Crash Course
 ** Core Functions in Depth

@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-23 08:24
-#+macro:version Version 0.0.22
+#+date:2020-01-24 07:31
+#+macro:version Version 0.0.23
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -690,35 +690,44 @@ working on.
 After installing, open Emacs.
 
 *** Emacs Configuration
+
+- [[https://github.com/flyingmachine/emacs-for-clojure][flyingmachine / emacs-for-clojure]]
+
 #+cindex:configuring Emacs
 The author has made a repository of all the files you need to configure Emacs
-for Clojure, available in the book’s resources at
-https://github.com/flyingmachine/emacs-for-clojure/archive/book1.zip
+for Clojure, available in the book’s resources at as a =zip= download:
+
+- https://github.com/flyingmachine/emacs-for-clojure/archive/book1.zip
 
 *NOTE:* These tools are constantly being updated, so if the instructions below
 don't work for you or you want to use the latest configuration, please read the
-instructions:
+instructions at the link given above.
 
-- Go to the [[https://github.com/flyingmachine/emacs-for-clojure][Emacs configuration files on GitHub]] (includes instructions)
-
-*** CFBT Init File
+*** CFBT Initialization Setup
 :PROPERTIES:
 :header-args: :mkdirp yes
 :END:
 
 These files and directories will replace the current Emacs configuration.  One
-option is to delete the current configuration and install these in their
-place.  Another option is to save the current configuration and install these
-temporarily, and then be able to switch between them.  A third option is to
-merge the current configuration with this configuration instead of completely
-deleting it.
+option is to delete the current configuration and install these in their place.
+That is the option chosen by the author.  Another option is to save the current
+configuration and install these temporarily, and then provide a way to switch
+between them.  A third option is to merge the current configuration with this
+configuration instead of completely deleting it.
 
 For the time being, I will use the second option: keep both and provide a means
-of toggling between them.  These files will go into a directory
-~/.emacs.d-cfbt/~.  The current ~/.emacs.d~ will be moved into
-~/.emacs.d-original~.  A sym-link will be set up to use either
-~/.emacs.d-original~ or ~/.emacs-d-cfbt~.  Emacs should be restarted when a
-switch is made.
+of toggling between them.  Later I will work on merging desired configurations
+together.  These files will go into a directory ~/.emacs.d-cfbt/~.  The current
+~/.emacs.d~ will be moved into ~/.emacs.d-original~.  A sym-link will be set up
+to use either ~/.emacs.d-original~ or ~/.emacs-d-cfbt~.  Emacs should be
+restarted when a switch is made.
+
+I have created a shell script to facilitate switching between different emacs
+initialization setups: ~toggle-emacs-init~.  It is run from the command line,
+and so is put into a ~bin/~ directory located through the =$PATH= variable.
+After a switch, Emacs must be restarted.  Killing Emacs from the command-line
+is probably not the best solution, so the restart should be done manually after
+the toggle.
 
 #+texinfo:@heading Custom Init.el for Clojure for the Brave and True
 
@@ -1311,51 +1320,6 @@ package-install=; add in your own as you wish:
   (setq ring-bell-function 'ignore)
 #+end_src
 
-*** Switching Between Configuration Setups
-
-#+name:cfbt-toggle-init-files
-#+header: :mkdirp yes
-#+header: :tangle tools/toggle-init
-#+header: :shebang "#!/usr/bin/env bash"
-#+begin_src sh
-  read -N 1 -ep "Toggle ~/.emacs.d ? "
-  echo REPLY is $REPLY
-  [[ $REPLY =~ "y" ]] || {
-      echo "Aborting toggle procedure."
-      exit 0
-  }
-
-  if [[ -d ~/.emacs.d ]]
-  then
-      if [[ -h ~/.emacs.d ]]
-      then
-	  if [[ $(readlink ~/.emacs.d) == ".emacs.d-original" ]]
-	  then
-	      ln -vsF ".emacs.d-cfbt" ~/.emacs.d
-	  else
-	      ln -vsF ".emacs.d-original" ~/.emacs.d
-	  fi
-
-      else
-	  cp -vR ~/.emacs.d ~/.emacs.d-original
-	  rm -Rf ~/.emacs.d
-	  ln -vs ~/.emacs.d-original ~/.emacs.d
-      fi
-  else
-      if [[ -d ~/.emacs.d-original ]]
-      then
-	  ln -vsF ~/.emacs.d-original ~/.emacs.d
-      else
-	  if [[ -d ~/.emacs.d-cfbt ]]
-	  then
-	      ln -vsF ~/.emacs.d-cfbt ~/.emacs.d
-	  else
-	      echo "Neither ~/.emacs.d nor ~/.emacs.d-original nor ~/.emacs.d-cfbt exists."
-	      echo "Aborting toggle procedure."
-	  fi
-      fi
-  fi
-#+end_src
 ** Clojure Crash Course
 ** Core Functions in Depth
 ** Functional Programming

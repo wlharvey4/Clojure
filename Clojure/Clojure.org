@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-24 07:31
-#+macro:version Version 0.0.23
+#+date:2020-01-24 10:52
+#+macro:version Version 0.0.24
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -768,7 +768,19 @@ archive-contents
 #+begin_src sh :results output :eval yes :exports both
 mkdir -v ~/.emacs.d-cfbt/elpa
 mkdir -v ~/.emacs.d-cfbt/themes
+cd ~/.emacs.d-cfbt/themes
+curl -sH "Authorization: token $GITHUB_TOKEN" \
+  https://api.github.com/repos/flyingmachine/emacs-for-clojure/contents/themes | awk \
+  '/download_url/ {
+      gsub("\"","",$2);
+      gsub(",","",$2);
+      print $2;
+      n=split($2, a, "/");
+      system("curl "$2" -o "a[n]);
+   }'
 #+end_src
+
+#+RESULTS: cfbt-elpa-themes
 
 **** Package Setup                                              :noexport:
 
@@ -2457,5 +2469,5 @@ Older versions are not supported.
 # fill-column: 79
 # indent-tabs-mode: t
 # time-stamp-pattern: "8/^\\#\\+date:%:y-%02m-%02d %02H:%02M$"
-# eval: (electric-quote-local-mode t)
+# electric-quote-local-mode: t
 # End:

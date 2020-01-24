@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-24 10:52
-#+macro:version Version 0.0.24
+#+date:2020-01-24 20:05
+#+macro:version Version 0.0.25
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -764,23 +764,40 @@ archive-contents
 
 #+texinfo:@heading Add an ELPA Directory
 
+This code creates ~elpa/~ and ~themes/~ directories.  Themes will be downloaded
+from the source repository, but files in the Elpa directory will be
+auto-generated.  While these themes are fairly old, they probably work just
+fine.
+
+I could not find a simple solution to download all files from a single
+directory from a GitHub repo, so resorted to a combination of ~curl~, the
+GitHub REST API =GET /repos/<USER>/<REPO>/contents/<DIR>= command and an ~awk~
+script.
+
+The =GET= API command produces information in the form of a JSON object about
+the directory, including a =download_url= for each file in the directory, which
+can be used to download each file in the directory one-by-one.  The script uses
+~awk~ to process the information so that ~curl~ can do its work for each file.
+
+The ~awk~ script is triggered for each such =download_url= line.  The url found
+in =$2= is cleaned of quote characters and commas using ~gsub()~.  Then a
+~system~ command is made that uses ~curl~ to download the file using the
+=download_url= found in =$2=.  This script seems to be fairly fast in practice.
+
 #+name:cfbt-elpa-themes
-#+begin_src sh :results output :eval yes :exports both
-mkdir -v ~/.emacs.d-cfbt/elpa
-mkdir -v ~/.emacs.d-cfbt/themes
+#+header: :results output :exports both
+#+header: :eval yes
+#+begin_src sh
+mkdir -vp ~/.emacs.d-cfbt/elpa
+mkdir -vp ~/.emacs.d-cfbt/themes
 cd ~/.emacs.d-cfbt/themes
 curl -sH "Authorization: token $GITHUB_TOKEN" \
   https://api.github.com/repos/flyingmachine/emacs-for-clojure/contents/themes | awk \
   '/download_url/ {
-      gsub("\"","",$2);
-      gsub(",","",$2);
-      print $2;
-      n=split($2, a, "/");
-      system("curl "$2" -o "a[n]);
+      gsub("\"|,","",$2);
+      system("curl -O "$2);
    }'
 #+end_src
-
-#+RESULTS: cfbt-elpa-themes
 
 **** Package Setup                                              :noexport:
 

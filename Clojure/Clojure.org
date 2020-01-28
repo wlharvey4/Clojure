@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-28 02:03
-#+macro:version Version 0.0.27
+#+date:2020-01-28 02:46
+#+macro:version Version 0.0.28
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -26,6 +26,8 @@ useful features that together form a simple, coherent, and powerful tool.”
 - [[https://clojure.org/api/api][Clojure API]]
 
 - [[https://clojure.org/guides/getting_started][Clojure Guides]]
+
+- [[https://guide.clojure.style][The Clojure Style Guide]]
 
 - [[https://github.com/clojure-emacs/clojure-mode][Clojure Mode]]
 
@@ -91,6 +93,25 @@ threads etc.  All functions are compiled to JVM bytecode.  Clojure is a great
 Java library consumer, offering the dot-target-member notation for calls to
 Java.  Clojure supports the dynamic implementation of Java interfaces and
 classes.
+
+** Clojure Style Guide
+“A community coding style guide for the Clojure programming language.”
+
+- https://guide.clojure.style
+
+- https://github.com/bbatsov/clojure-style-guide
+
+** Clojure Coding Guidelines
+
+- https://clojure.org/community/contrib_howto#_coding_guidelines
+
+** Resources
+
+*** Clojure Programming
+
+- http://www.clojurebook.com
+
+- https://github.com/clojurebook/ClojureProgramming
 
 * Clojure for the Brave and True
 :PROPERTIES:

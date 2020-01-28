@@ -3,8 +3,8 @@
 #+title:Clojure
 #+subtitle:{{{version}}} {{{date}}}
 #+author:Pinecone062
-#+date:2020-01-24 23:04
-#+macro:version Version 0.0.26
+#+date:2020-01-28 02:03
+#+macro:version Version 0.0.27
 
 /{{{title}}}/ {{{version}}} compiled {{{date}}}
 
@@ -26,6 +26,8 @@ useful features that together form a simple, coherent, and powerful tool.”
 - [[https://clojure.org/api/api][Clojure API]]
 
 - [[https://clojure.org/guides/getting_started][Clojure Guides]]
+
+- [[https://github.com/clojure-emacs/clojure-mode][Clojure Mode]]
 
 
 Clojure is a dynamic, general-purpose programming language, combining the
@@ -716,18 +718,19 @@ between them.  A third option is to merge the current configuration with this
 configuration instead of completely deleting it.
 
 For the time being, I will use the second option: keep both and provide a means
-of toggling between them.  Later I will work on merging desired configurations
+of switching between them.  Later I will work on merging desired configurations
 together.  These files will go into a directory ~/.emacs.d-cfbt/~.  The current
-~/.emacs.d~ will be moved into ~/.emacs.d-original~.  A sym-link will be set up
-to use either ~/.emacs.d-original~ or ~/.emacs-d-cfbt~.  Emacs should be
-restarted when a switch is made.
+~/.emacs.d~ will be moved into ~/.emacs.d-original~.  A sym-link on ~/.emacs.d~
+will be set up to use either ~/.emacs.d-original~ or ~/.emacs-d-cfbt~.  Emacs
+should be restarted when a switch is made.
 
+#+findex:desktop-save
 I have created a shell script to facilitate switching between different emacs
-initialization setups: ~toggle-emacs-init~.  It is run from the command line,
+initialization setups: ~switch-emacs-init~.  It is run from the command line,
 and so is put into a ~bin/~ directory located through the =$PATH= variable.
 After a switch, Emacs must be restarted.  Killing Emacs from the command-line
-is probably not the best solution, so the restart should be done manually after
-the toggle.
+is probably not the best solution, but it is manageable using the
+~desktop~save~ feature of Emacs.
 
 #+texinfo:@heading Custom Init.el for Clojure for the Brave and True
 
@@ -2467,17 +2470,6 @@ Copyright \copy 2020 by {{{author}}}
 :END:
 
 
-* Export Configurations                                            :noexport:
-#+texinfo_filename:clojure.info
-#+texinfo_class: info
-#+texinfo_header:
-#+texinfo_post_header:
-#+texinfo_dir_category:Programming Languages
-#+texinfo_dir_title:Clojure
-#+texinfo_dir_desc:All about the elegant language of Clojure
-#+texinfo_printed_title:All About Clojure
-
-
 * Footnotes
 
 [fn:3] 
@@ -2491,6 +2483,17 @@ Clojure(Script) programming language.
 [fn:2]CIDER will automatically work with Leiningen 2.9.0+ or Boot 2.8.3+.
 Older versions are not supported.
 
+* Export Configurations                                            :noexport:
+#+texinfo_filename:clojure.info
+#+texinfo_class: info
+#+texinfo_header:
+#+texinfo_post_header:
+#+texinfo_dir_category:Programming Languages
+#+texinfo_dir_title:Clojure
+#+texinfo_dir_desc:All about the elegant language of Clojure
+#+texinfo_printed_title:All About Clojure
+
+
 * Local Variables                                                  :noexport:
 
 # Local Variables:
